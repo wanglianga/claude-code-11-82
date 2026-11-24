@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  servlet:
+    encoding:
+      charset: UTF-8
+
+spring:
+  application:
+    name: imaging-sandbox
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://127.0.0.1:5432/ccdev}
+    username: ${DB_USERNAME:ccdev}
+    password: ${DB_PASSWORD:ccdev}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    show-sql: false
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:sandbox-controlled-disclosure-jwt-secret-key-please-change-0123456789}
+    ttl-minutes: 720
+  cors:
+    allowed-origins: ${CORS_ORIGINS:http://localhost:5173}
+
+logging:
+  level:
+    com.sandbox.imaging: INFO

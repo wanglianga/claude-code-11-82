@@ -1,0 +1,43 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: imaging-postgres
+    environment:
+      POSTGRES_DB: ccdev
+      POSTGRES_USER: ccdev
+      POSTGRES_PASSWORD: ccdev
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ccdev -d ccdev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    container_name: imaging-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/ccdev
+      DB_USERNAME: ccdev
+      DB_PASSWORD: ccdev
+      JWT_SECRET: sandbox-controlled-disclosure-jwt-secret-key-please-change-0123456789
+      CORS_ORIGINS: http://localhost:8088
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./frontend
+    container_name: imaging-frontend
+    depends_on:
+      - backend
+    ports:
+      - "8088:80"
+
+volumes:
+  pgdata:
